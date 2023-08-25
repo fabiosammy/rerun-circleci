@@ -1,0 +1,16 @@
+{
+  "name": "rerun-circleci",
+  "version": "0.0.1",
+  "description": "Use to click on the rerun failed test only when is necessary",
+  "engines": {
+    "node": "16.x"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  }
+}
