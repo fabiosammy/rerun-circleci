@@ -16,7 +16,7 @@ app.post('/circleci', async (req, res) => {
   const circleciPath = req.body["workflow"]["url"]
   console.log('Destination:', circleciPath)
 
-  if(req.body["workflow"]["status"] != "success") {
+  if(req.body["pipeline"]["vcs"]["branch"] == "master" && req.body["workflow"]["status"] == "failed") {
     const browser = await puppeteer.launch({
       headless: true,
       executablePath: process.env.GOOGLE_CHROME_BIN,
