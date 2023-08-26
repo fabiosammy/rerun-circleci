@@ -19,6 +19,7 @@ app.post('/circleci', async (req, res) => {
   if(req.body["workflow"]["status"] != "success") {
     const browser = await puppeteer.launch({
       headless: true,
+      executablePath: process.env.GOOGLE_CHROME_BIN,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox'
