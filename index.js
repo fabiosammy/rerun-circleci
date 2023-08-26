@@ -17,18 +17,38 @@ app.post('/circleci', async (req, res) => {
   console.log('Destination:', circleciPath)
 
   if(req.body["pipeline"]["vcs"]["branch"] == "master" && req.body["workflow"]["status"] != "success") {
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        '--no-sandbox'
+      ]
+    })
+
     try {
       console.log('going to the destination')
       const page = await browser.newPage()
+
+      await page.setCookie({
+        name: 'ring-session',
+        value: process.env.RING_SESSION,
+        domain: '.circleci.com',
+      })
+
+      await page.setViewport({
+        width: 1920,
+        height: 1080,
+      })
+
       await page.goto(circleciPath)
-      await page.click('span:contains("Rerun")')
+      // TODO: Wait for the element to be clicked instead of a timeout
       await page.waitForTimeout(2000)
-      await page.click('span:contains("Rerun failed tests")')
+      await page.click('button[aria-label="More Actions"][title="More Actions"].css-gm0ygh')
       await page.waitForTimeout(2000)
-      res.status(200).send('going to: ', circleciPath)
+      await page.click('button[aria-label="Rerun failed tests"]')
+      await page.waitForTimeout(2000)
+      res.status(200).send('OK')
     } catch (error) {
-      console.log('SOMETHING GOES WRONG!!!')
+      console.log('SOMETHING GOES WRONG!', error)
       res.status(500).send('Something goes wrong');
     } finally {
       await browser.close()
