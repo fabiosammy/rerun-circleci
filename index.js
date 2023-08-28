@@ -20,6 +20,7 @@ app.post('/circleci', async (req, res) => {
   console.log('Pipeline:', circleciPath)
 
   if(req.body["pipeline"]["vcs"]["branch"] == "master" && req.body["workflow"]["status"] == "failed") {
+    console.log('For debug, all the webhook data: ', req.body)
     const browser = await puppeteer.launch({
       headless: true,
       executablePath: process.env.GOOGLE_CHROME_BIN,
