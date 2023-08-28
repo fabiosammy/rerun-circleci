@@ -11,10 +11,13 @@ app.use(bodyParser.json())
 app.post('/circleci', async (req, res) => {
   // CircleCI webhook reference:
   // https://circleci.com/docs/webhooks-reference/
-  console.log('Received Webhook:', req.body);
+  // console.log('Received Webhook:', req.body);
+  console.log('Received a webhook:')
+  console.log('Branch: ', req.body["pipeline"]["vcs"]["branch"])
+  console.log('Status: ', req.body["workflow"]["status"])
   // const circleciPath = `https://app.circleci.com/pipelines/${req.body["project"]["slug"]}/${req.body["pipeline"]["number"]}/workflows/${req.body["workflow"]["id"]}`
   const circleciPath = req.body["workflow"]["url"]
-  console.log('Destination:', circleciPath)
+  console.log('Pipeline:', circleciPath)
 
   if(req.body["pipeline"]["vcs"]["branch"] == "master" && req.body["workflow"]["status"] == "failed") {
     const browser = await puppeteer.launch({
@@ -27,7 +30,7 @@ app.post('/circleci', async (req, res) => {
     })
 
     try {
-      console.log('going to the destination')
+      console.log('Trigerring the rerun')
       const page = await browser.newPage()
 
       await page.setCookie({
@@ -56,8 +59,8 @@ app.post('/circleci', async (req, res) => {
       await browser.close()
     }
   } else {
-    console.log('Dont go')
-    res.status(200).send('Dont go')
+    console.log('The requirement does not match')
+    res.status(200).send('OK')
   }
 })
 
