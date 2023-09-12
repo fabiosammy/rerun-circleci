@@ -48,9 +48,9 @@ app.post('/circleci', async (req, res) => {
       await page.goto(circleciPath)
       // TODO: Wait for the element to be clicked instead of a timeout
       await page.waitForTimeout(2000)
-      await page.click('button[aria-label="More Actions"][title="More Actions"].css-gm0ygh')
+      await page.click('button[aria-label="More Actions"][title="More Actions"]')
       await page.waitForTimeout(2000)
-      await page.click('button[aria-label="Rerun failed tests"]')
+      await page.click('button[aria-label="Rerun failed tests"][title="Rerun failed tests"]')
       await page.waitForTimeout(2000)
       res.status(200).send('OK')
     } catch (error) {
