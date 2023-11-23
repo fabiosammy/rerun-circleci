@@ -69,14 +69,14 @@ app.get('/run-ci', async(req, res) => {
   const referrer = req.headers["referer"]
   const project = req.query.project
   const branch = req.query.branch
-  const circleEndpoint = `https://circleci.com/api/v2/project/gh/${project}/pipeline`
+  const circleEndpoint = `https://circleci.com/api/v2/project/github/${project}/pipeline`
   const circleRedirect = `https://app.circleci.com/pipelines/github/${project}?branch=${branch}`
 
   console.log(`Running the ci for branch ${branch} on ${project} project to ${circleEndpoint}`)
   console.log(`Should return to ${referrer} or ${circleRedirect}`)
   const options = {
     method: 'POST',
-    headers: {'content-type': 'application/json', authorization: `Circle-Token ${process.env.CIRCLE_TOKEN}`},
+    headers: {'Content-Type': 'application/json', 'Circle-Token': process.env.CIRCLE_TOKEN},
     body: JSON.stringify({
       branch: branch,
       parameters: {'run-ci': true}
