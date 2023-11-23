@@ -48,10 +48,25 @@ app.post('/circleci', async (req, res) => {
       await page.goto(circleciPath)
       // TODO: Wait for the element to be clicked instead of a timeout
       await page.waitForTimeout(2000)
-      await page.click('button[aria-label="More Actions"][title="More Actions"]')
-      await page.waitForTimeout(2000)
-      await page.click('button[aria-label="Rerun failed tests"][title="Rerun failed tests"]')
-      await page.waitForTimeout(2000)
+
+      // TODO: Ignore if something is running
+
+      // Count the number of elements inside of a page
+      const counter_all_tests = await page.evaluate(() => {
+        const anchors = Array.from(document.querySelectorAll('a'))
+        return anchors.filter(anchor => anchor.textContent.trim() === 'all_tests').length
+      })
+
+      if(counter_all_tests <= 7) {
+        console.log(`Rerunning ${req.body["pipeline"]["vcs"]["branch"]} after ${counter_all_tests} tries!`)
+        await page.click('button[aria-label="More Actions"][title="More Actions"]')
+        await page.waitForTimeout(2000)
+        await page.click('button[aria-label="Rerun failed tests"][title="Rerun failed tests"]')
+        await page.waitForTimeout(2000)
+      } else {
+        console.log(`Ignored after ${counter_all_tests} tries!`)
+      }
+
       res.status(200).send('OK')
     } catch (error) {
       console.log('SOMETHING GOES WRONG!', error)
