@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const puppeteer = require('puppeteer')
-const request = require('request')
 
 const PORT = process.env.PORT || 3000
 
@@ -76,17 +75,16 @@ app.get('/run-ci', async(req, res) => {
     method: 'POST',
     url: `"https://circleci.com/api/v2/project/gh/${project}/pipeline"`,
     headers: {'content-type': 'application/json', authorization: `"Circle-Token ${process.env.CIRCLE_TOKEN}"`},
-    body: {
+    body: JSON.stringify({
       branch: `"${branch}"`,
       parameters: {'run-ci': true}
-    },
-    json: true
+    }),
   }
 
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-  })
-
+  fetch(options)
+    .then(response => response.json())
+    .then(data => console.log('CircleCI API response:', data))
+    .catch(error => console.error('Error sending POST request to CircleCI API:', error))
 
   if (referrer) {
     res.redirect(referrer);
