@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const puppeteer = require('puppeteer')
+const request = require('request')
 
 const PORT = process.env.PORT || 3000
 
@@ -62,6 +63,35 @@ app.post('/circleci', async (req, res) => {
   } else {
     console.log('The requirement does not match')
     res.status(200).send('OK')
+  }
+})
+
+app.get('/run-ci', async(req, res) => {
+  const referrer = req.headers["referer"]
+  const project = req.query.project
+  const branch = req.query.branch
+
+  console.log(`"Running the ci for branch ${branch} on ${project} project"`)
+  const options = {
+    method: 'POST',
+    url: `"https://circleci.com/api/v2/project/gh/${project}/pipeline"`,
+    headers: {'content-type': 'application/json', authorization: `"Basic ${process.env.CIRCLE_TOKEN}"`},
+    body: {
+      branch: `"${branch}"`,
+      parameters: {'run-ci': true}
+    },
+    json: true
+  }
+
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+  })
+
+
+  if (referrer) {
+    res.redirect(referrer);
+  } else {
+    res.redirect(`"https://app.circleci.com/pipelines/github/${project}?branch=${branch}"`);
   }
 })
 
