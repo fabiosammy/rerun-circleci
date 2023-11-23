@@ -76,7 +76,6 @@ app.get('/run-ci', async(req, res) => {
   console.log(`Should return to ${referrer} or ${circleRedirect}`)
   const options = {
     method: 'POST',
-    url: circleEndpoint,
     headers: {'content-type': 'application/json', authorization: `Circle-Token ${process.env.CIRCLE_TOKEN}`},
     body: JSON.stringify({
       branch: branch,
@@ -84,7 +83,7 @@ app.get('/run-ci', async(req, res) => {
     }),
   }
 
-  fetch(options)
+  fetch(circleEndpoint, options)
     .then(response => response.json())
     .then(data => console.log('CircleCI API response:', data))
     .catch(error => console.error('Error sending POST request to CircleCI API:', error))
