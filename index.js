@@ -75,7 +75,7 @@ app.get('/run-ci', async(req, res) => {
   const options = {
     method: 'POST',
     url: `"https://circleci.com/api/v2/project/gh/${project}/pipeline"`,
-    headers: {'content-type': 'application/json', authorization: `"Basic ${process.env.CIRCLE_TOKEN}"`},
+    headers: {'content-type': 'application/json', authorization: `"Circle-Token ${process.env.CIRCLE_TOKEN}"`},
     body: {
       branch: `"${branch}"`,
       parameters: {'run-ci': true}
