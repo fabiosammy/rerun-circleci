@@ -73,10 +73,10 @@ app.get('/run-ci', async(req, res) => {
   console.log(`"Running the ci for branch ${branch} on ${project} project"`)
   const options = {
     method: 'POST',
-    url: `"https://circleci.com/api/v2/project/gh/${project}/pipeline"`,
-    headers: {'content-type': 'application/json', authorization: `"Circle-Token ${process.env.CIRCLE_TOKEN}"`},
+    url: `https://circleci.com/api/v2/project/gh/${project}/pipeline`,
+    headers: {'content-type': 'application/json', authorization: `Circle-Token ${process.env.CIRCLE_TOKEN}`},
     body: JSON.stringify({
-      branch: `"${branch}"`,
+      branch: branch,
       parameters: {'run-ci': true}
     }),
   }
