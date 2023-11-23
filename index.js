@@ -88,11 +88,7 @@ app.get('/run-ci', async(req, res) => {
     .then(data => console.log('CircleCI API response:', data))
     .catch(error => console.error('Error sending POST request to CircleCI API:', error))
 
-  if (referrer) {
-    res.redirect(referrer);
-  } else {
-    res.redirect(circleRedirect);
-  }
+  res.redirect(circleRedirect)
 })
 
 app.get('/', (req, res) => {
