@@ -93,8 +93,7 @@ app.get('/run-ci', async(req, res) => {
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Circle-Token': process.env.CIRCLE_TOKEN},
     body: JSON.stringify({
-      branch: branch,
-      parameters: {'run-ci': true}
+      branch: branch
     }),
   }
 
