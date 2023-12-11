@@ -88,7 +88,8 @@ app.post('/circleci', async (req, res) => {
         return anchors.filter(anchor => anchor.textContent.trim() === 'all_tests').length
       })
 
-      if(counter_all_tests <= 7) {
+      // Because of the duplication of the webhooks, is doing two more than the counter below
+      if(counter_all_tests < 5) {
         console.log(`Rerunning ${req.body["pipeline"]["vcs"]["branch"]} after ${counter_all_tests} tries!`)
         await page.goto(workflowPath)
         await page.waitForTimeout(2000)
