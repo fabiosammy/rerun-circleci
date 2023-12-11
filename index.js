@@ -50,6 +50,34 @@ app.post('/circleci', async (req, res) => {
       await page.waitForTimeout(2000)
 
       // TODO: Ignore if something is running
+      // <a data-cy="workflow-status-link" href="/pipelines/github/clickfunnels2/admin/82679/workflows/f8cc9c2e-8c95-4d33-9376-8174e27eceec" class="css-l59eie">
+      //  <div title="Running" type="RUNNING" class="css-14act6w">
+      //    <div color="currentColor" class="css-f9197o" data-darkreader-inline-color="" style="--darkreader-inline-color: currentColor;">
+      //       <svg role="img" focusable="false" viewBox="0 0 24 24" aria-label="Status Running Dark" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="css-bleycz" data-darkreader-inline-fill="" style="--darkreader-inline-fill: currentColor;">
+      //         <circle fill="#6A6A6A" cx="12" cy="12" r="10" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #a59d92;">
+      //         </circle>
+      //         <path fill="#FFFFFF" stroke="#FFFFFF" d="M22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12" class="css-wt8bno" data-darkreader-inline-fill="" data-darkreader-inline-stroke="" style="--darkreader-inline-fill: #e8e6e3; --darkreader-inline-stroke: #e8e6e3;">
+      //         </path>
+      //         <path fill="#FFFFFF" stroke="#FFFFFF" d="M22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12" class="css-ucdh5z" data-darkreader-inline-fill="" data-darkreader-inline-stroke="" style="--darkreader-inline-fill: #e8e6e3; --darkreader-inline-stroke: #e8e6e3;">
+      //         </path>
+      //       </svg>
+      //     </div>
+      //     Running
+      //   </div>
+      //   <div class="css-1xczg1a">9m 38s&nbsp;
+      //     <div class="css-2va2ht">
+      //       remain
+      //       <span data-tip="Estimated time remaining based on previous workflow runs." data-for="pipeline-action-tooltip" data-place="bottom" currentitem="false">
+      //         <div size="16" color="currentColor" class="css-gq48mf" data-darkreader-inline-color="" style="--darkreader-inline-color: currentColor;">
+      //           <svg role="img" focusable="false" viewBox="0 0 24 24" aria-label="Info Outline" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="css-bleycz" data-darkreader-inline-fill="" style="--darkreader-inline-fill: currentColor;">
+      //             <path fill-rule="evenodd" clip-rule="evenodd" d="M20 12C20 7.58457 16.4154 4 12 4C7.58457 4 4 7.58457 4 12C4 16.4154 7.58457 20 12 20C16.4154 20 20 16.4154 20 12ZM22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12ZM12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6ZM11 11C11 10.4477 11.4477 10 12 10C12.5523 10 13 10.4477 13 11V17C13 17.5523 12.5523 18 12 18C11.4477 18 11 17.5523 11 17V11Z">
+      //             </path>
+      //           </svg>
+      //         </div>
+      //       </span>
+      //     </div>
+      //   </div>
+      // </a>
 
       // Count the number of elements inside of a page
       const counter_all_tests = await page.evaluate(() => {
@@ -66,13 +94,13 @@ app.post('/circleci', async (req, res) => {
       } else {
         console.log(`Ignored after ${counter_all_tests} tries!`)
       }
-
-      res.status(200).send('OK')
     } catch (error) {
       console.log('SOMETHING GOES WRONG!', error)
       res.status(500).send('Something goes wrong');
     } finally {
       await browser.close()
+
+      res.status(200).send('OK')
     }
   } else {
     console.log('The requirement does not match')
