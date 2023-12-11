@@ -15,12 +15,14 @@ app.post('/circleci', async (req, res) => {
   console.log('Received a webhook:')
   console.log('Branch: ', req.body["pipeline"]["vcs"]["branch"])
   console.log('Status: ', req.body["workflow"]["status"])
-  // const circleciPath = `https://app.circleci.com/pipelines/${req.body["project"]["slug"]}/${req.body["pipeline"]["number"]}/workflows/${req.body["workflow"]["id"]}`
-  const circleciPath = req.body["workflow"]["url"]
-  console.log('Pipeline:', circleciPath)
+  const pipelinePath = `https://app.circleci.com/pipelines/${req.body["project"]["slug"]}/${req.body["pipeline"]["number"]}`
+  const workflowPath = req.body["workflow"]["url"]
+  console.log('Pipeline:', pipelinePath)
+  console.log('Workflow:', workflowPath)
 
   if(req.body["pipeline"]["vcs"]["branch"] == "master" && req.body["workflow"]["status"] == "failed") {
     console.log('For debug, all the webhook data: ', req.body)
+    console.log('####################')
     const browser = await puppeteer.launch({
       headless: true,
       executablePath: process.env.GOOGLE_CHROME_BIN,
@@ -31,7 +33,7 @@ app.post('/circleci', async (req, res) => {
     })
 
     try {
-      console.log('Trigerring the rerun')
+      console.log('Trigerring the rerun...')
       const page = await browser.newPage()
 
       await page.setCookie({
@@ -45,7 +47,8 @@ app.post('/circleci', async (req, res) => {
         height: 1080,
       })
 
-      await page.goto(circleciPath)
+      await page.goto(pipelinePath)
+
       // TODO: Wait for the element to be clicked instead of a timeout
       await page.waitForTimeout(2000)
 
@@ -87,6 +90,8 @@ app.post('/circleci', async (req, res) => {
 
       if(counter_all_tests <= 7) {
         console.log(`Rerunning ${req.body["pipeline"]["vcs"]["branch"]} after ${counter_all_tests} tries!`)
+        await page.goto(workflowPath)
+        await page.waitForTimeout(2000)
         await page.click('button[aria-label="More Actions"][title="More Actions"]')
         await page.waitForTimeout(2000)
         await page.click('button[aria-label="Rerun failed tests"][title="Rerun failed tests"]')
